@@ -14,27 +14,28 @@ function App() {
       setLoading(false);
     });
   }, []);
-  const [selectedVal, setSelectedVal] = useState("not"); // 선택값
   const [dollars, setDollars] = useState(0); // 사용자 돈
-  const [symbol, setSymbol] = useState(); // 선택한 코인 symbol
+  const [symbol, setSymbol] = useState(""); // 선택한 코인 symbol
   const [price, setPrice] = useState(0); // 선택한 코인 price
   const onChange = (event) => {
     setDollars(event.target.value);
   }
 
   const onSelect = (event) => {
-    setSelectedVal(event.target.value);
-  }
-  useEffect(() => {
-    if (selectedVal !== "not") {
-      const values = selectedVal.split(",");
-      setSymbol(values[0]);
-      setPrice(values[1]);
+    const index = event.target.selectedIndex;
+    console.log(index);
+    if (index !== 0) {
+      setSymbol(coins[index-1].symbol);
+      setPrice(coins[index-1].quotes.USD.price);
     } else {
+      setSymbol("");
       setPrice(0);
       setDollars(0);
     }
-  }, [selectedVal]);
+  }
+  useEffect(() => {
+
+  }, [symbol]);
 
   return (
     <div>
@@ -45,19 +46,19 @@ function App() {
           <select onChange={onSelect}>
             <option value="not">선택</option>
             {coins.map((coin) => (
-              <option key={coin.id} value={[coin.symbol,coin.quotes.USD.price]}>
+              <option key={coin.id}>
                 {coin.name} ({coin.symbol}): {coin.quotes.USD.price} USD
               </option>
             ))}
           </select><br/>
-          {selectedVal !== "not" ? (
+          {symbol !== "" ? (
             <div>
               <h4>money to coin</h4>
               <label htmlFor="dollar">$</label>
               <input onChange={onChange} id='dollar' type='number'/><br/>
               <label>({symbol})</label>
               <input 
-                value={selectedVal === "not" ? "0" : `${dollars / price}`}
+                value={symbol === "" ? null : `${dollars / price}`}
                 disabled='disabled'/>
             </div>
           ) : null}
