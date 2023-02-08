@@ -33,10 +33,7 @@ function App() {
       setDollars(0);
     }
   }
-  useEffect(() => {
-
-  }, [symbol]);
-
+  
   return (
     <div>
       {/* 백틱(`)을 이용하여 작성 가능 (ES6, 템플릿 리터럴..) */}
@@ -62,7 +59,6 @@ function App() {
                 disabled='disabled'/>
             </div>
           ) : null}
-          
         </div>
       )}
     </div>
