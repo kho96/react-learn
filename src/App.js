@@ -1,44 +1,69 @@
 
+import { number } from "prop-types";
 import { useState, useEffect } from "react";
 
 
 function App() {
-  const [toDo, setToDo] = useState("");
-  const [toDos, setToDos] = useState([]);
-  const onChange = (event) => {setToDo(event.target.value)};
-  const onSubmit = (event) => {
-    event.preventDefault();
-    if(toDo === "") {
-      return;
+  const [loading, setLoading] = useState(true);
+  const [coins, setConins] = useState([]);
+  useEffect(() => {
+    fetch("https://api.coinpaprika.com/v1/tickers")
+    .then((response) => response.json())
+    .then((json) => {
+      setConins(json);
+      setLoading(false);
+    });
+  }, []);
+  const [selectedVal, setSelectedVal] = useState("not"); // 선택값
+  const [dollars, setDollars] = useState(0); // 사용자 돈
+  const [symbol, setSymbol] = useState(); // 선택한 코인 symbol
+  const [price, setPrice] = useState(0); // 선택한 코인 price
+  const onChange = (event) => {
+    setDollars(event.target.value);
+  }
+
+  const onSelect = (event) => {
+    setSelectedVal(event.target.value);
+  }
+  useEffect(() => {
+    if (selectedVal !== "not") {
+      const values = selectedVal.split(",");
+      setSymbol(values[0]);
+      setPrice(values[1]);
+    } else {
+      setPrice(0);
+      setDollars(0);
     }
-    
-    // toDos.push()하지 않는다. state를 직접 수정X
-    setToDos((currentArray) => [toDo, ...currentArray]);
-    // ...[] - 배열 복사
-    setToDo("");
-  };
+  }, [selectedVal]);
+
   return (
     <div>
-      <h1>My To Dos ({toDos.length})</h1>
-      <form onSubmit={onSubmit}>
-        <input
-          onChange={onChange}
-          value={toDo}
-          type="text" placeholder="Write your to do...."/>
-          <button>Add To Do</button>
-      </form>
-      <hr />
-      {/* 
-        map함수는 Array 안의 item을 가져와 코드를 실행함.
-        첫번째 argument는 value, Array안의 item을 의미,
-        두번째 argument는 index, 단순한 숫자
-      */}
-      <ul>
-        {/* li를 사용하면 key값이 존재해야한다. */}
-        {toDos.map((item, index) => 
-          <li key={index}>{item}</li
-        >)}
-      </ul>
+      {/* 백틱(`)을 이용하여 작성 가능 (ES6, 템플릿 리터럴..) */}
+      <h1>The Coins! {loading ? "" : `(${coins.length})`}</h1>
+      {loading ? <strong>Loading....</strong> : (
+        <div>
+          <select onChange={onSelect}>
+            <option value="not">선택</option>
+            {coins.map((coin) => (
+              <option key={coin.id} value={[coin.symbol,coin.quotes.USD.price]}>
+                {coin.name} ({coin.symbol}): {coin.quotes.USD.price} USD
+              </option>
+            ))}
+          </select><br/>
+          {selectedVal !== "not" ? (
+            <div>
+              <h4>money to coin</h4>
+              <label htmlFor="dollar">$</label>
+              <input onChange={onChange} id='dollar' type='number'/><br/>
+              <label>({symbol})</label>
+              <input 
+                value={selectedVal === "not" ? "0" : `${dollars / price}`}
+                disabled='disabled'/>
+            </div>
+          ) : null}
+          
+        </div>
+      )}
     </div>
   );
 }
