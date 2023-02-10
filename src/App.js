@@ -1,66 +1,37 @@
 
-import { number } from "prop-types";
 import { useState, useEffect } from "react";
 
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [coins, setConins] = useState([]);
+  const [movies, setMovies] = useState([]);
+  const getMovies = async() => {
+    const json = await (
+      await fetch(
+      `https://yts.mx/api/v2/list_movies.json?minimum_rating=9&sort_by=year`
+      )
+    ).json();
+    setMovies(json.data.movies);
+    setLoading(false);
+  }
   useEffect(() => {
-    fetch("https://api.coinpaprika.com/v1/tickers")
-    .then((response) => response.json())
-    .then((json) => {
-      setConins(json);
-      setLoading(false);
-    });
+    getMovies();
   }, []);
-  const [dollars, setDollars] = useState(0); // 사용자 돈
-  const [symbol, setSymbol] = useState(""); // 선택한 코인 symbol
-  const [price, setPrice] = useState(0); // 선택한 코인 price
-  const onChange = (event) => {
-    setDollars(event.target.value);
-  }
-
-  const onSelect = (event) => {
-    const index = event.target.selectedIndex;
-    console.log(index);
-    if (index !== 0) {
-      setSymbol(coins[index-1].symbol);
-      setPrice(coins[index-1].quotes.USD.price);
-    } else {
-      setSymbol("");
-      setPrice(0);
-      setDollars(0);
-    }
-  }
-  
   return (
     <div>
-      {/* 백틱(`)을 이용하여 작성 가능 (ES6, 템플릿 리터럴..) */}
-      <h1>The Coins! {loading ? "" : `(${coins.length})`}</h1>
-      {loading ? <strong>Loading....</strong> : (
-        <div>
-          <select onChange={onSelect}>
-            <option value="not">선택</option>
-            {coins.map((coin) => (
-              <option key={coin.id}>
-                {coin.name} ({coin.symbol}): {coin.quotes.USD.price} USD
-              </option>
-            ))}
-          </select><br/>
-          {symbol !== "" ? (
-            <div>
-              <h4>money to coin</h4>
-              <label htmlFor="dollar">$</label>
-              <input onChange={onChange} id='dollar' type='number'/><br/>
-              <label>({symbol})</label>
-              <input 
-                value={symbol === "" ? null : `${dollars / price}`}
-                disabled='disabled'/>
-            </div>
-          ) : null}
-        </div>
-      )}
+      {loading ? <h1>Loading...</h1>: <div>
+        {movies.map(movies => 
+          <div key={movies.id}>
+            <h2>{movies.title}</h2>
+            <p>{movies.summary}</p>
+            <ul>
+              {movies.genres !== null ? null : movies.genres.map((g) => {
+                <li key={g}>{g}</li>
+              })}
+              
+            </ul>
+          </div>
+        )}</div>}
     </div>
   );
 }
