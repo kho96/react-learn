@@ -1,5 +1,8 @@
+/* BrowserRouter - 우리가 흔히 사용하는 URL형식
+  HashRouter - URL앞에 #가 들어감.
+*/
 import {
-  BrowserRouter as Router,
+  BrowserRouter as Router, 
   Switch,
   Route,
 } from "react-router-dom";
@@ -9,7 +12,8 @@ import Detail from "./routes/Detail";
 function App() {
   return <Router>
       <Switch>
-        <Route path="/movie">
+        {/*:id라고 해야한다.(id만하면 text, :id-id를 받는다.)*/}
+        <Route path="/movie/:id">
           <Detail />
         </Route>
         <Route path="/"> 
