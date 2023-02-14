@@ -24,7 +24,7 @@ function Detail() {
                     movImg={movie.medium_cover_image}
                     year={movie.year}
                     content={movie.description_intro}
-                    raiting={movie.rating}
+                    rating={movie.rating}
                     genres={movie.genres}
                 />
             }
