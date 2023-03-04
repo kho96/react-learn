@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import Home from "./routes/Home";
 import Detail from "./routes/Detail";
+import Test from "./routes/Test";
 
 function App() {
   return <Router>
@@ -15,6 +16,9 @@ function App() {
         {/*:id라고 해야한다.(id만하면 text, :id-id를 받는다.)*/}
         <Route path="/movie/:id">
           <Detail />
+        </Route>
+        <Route path="/test">
+          <Test />
         </Route>
         <Route path="/"> 
           {/* 유저의 경로가 "/"라면 Home.js를 보여준다. */}
