@@ -9,6 +9,7 @@ import {
 import Home from "./routes/Home";
 import Detail from "./routes/Detail";
 import Test from "./routes/Test";
+import TestDetail from "./routes/TestDetail";
 
 function App() {
   return <Router>
@@ -19,6 +20,9 @@ function App() {
         </Route>
         <Route path="/test">
           <Test />
+        </Route>
+        <Route path="/test-detail/:id">
+          <TestDetail />
         </Route>
         <Route path="/"> 
           {/* 유저의 경로가 "/"라면 Home.js를 보여준다. */}
